@@ -1,6 +1,8 @@
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { ModuleOptions } from "webpack";
 import { IOptions } from "./types/types";
+import  ReactRefreshTypeScript  from "react-refresh-typescript";
+
 
 export function buildLoaders(options: IOptions): ModuleOptions["rules"] {
   const isDev = options.mode === "development";
@@ -16,6 +18,35 @@ export function buildLoaders(options: IOptions): ModuleOptions["rules"] {
     },
   };
 
+  const assetLoader = {
+    test: /\.(png|jpg|jpeg|gif)$/i,
+    type: "asset/resource",
+  };
+
+  const svgLoader = {
+    test: /\.svg$/i,
+    issuer: /\.[jt]sx?$/,
+    use: [
+      {
+        loader: "@svgr/webpack",
+        options: {
+          icon: true, // данный параметр нужен для того, чтобы работать с размерами свг напрямую, а не с размером контейнера, в котором находится svg
+          // Данная цепочка нужна для того, чтобы цвет svg можно было менять напрямую
+          svgoConfig: {
+            plugins: [
+              {
+                name: "convertColors",
+                params: {
+                  currentColor: true,
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  };
+
   const scssLoader = {
     test: /\.s[ac]ss$/i,
     use: [
@@ -27,9 +58,19 @@ export function buildLoaders(options: IOptions): ModuleOptions["rules"] {
 
   const tsLoader = {
     test: /\.tsx?$/, // Формат расширения файла подходящий для этого loader
-    use: "ts-loader", // Название лоадера для этой регулярки
+    use: [
+      {
+        loader: 'ts-loader', // Название лоадера для этой регулярки
+        options: {
+          transpileOnly: isDev ? true : false, // Параметр, который позволяет не ломать сборку, если есть ошибки в ts,
+          getCustomTransformers: () => ({
+            before: [isDev && ReactRefreshTypeScript()].filter(Boolean),
+          }),
+        }
+      }
+    ], 
     exclude: /node_modules/, // Файлы которые исключаем
   };
 
-  return [scssLoader, tsLoader];
+  return [svgLoader, assetLoader, scssLoader, tsLoader];
 }

@@ -21,7 +21,7 @@ export function buildWebpack(options: IOptions): webpack.Configuration {
     module: {
       rules: buildLoaders(options),
     },
-    resolve: buildResolvers(),
+    resolve: buildResolvers(options),
     devtool: isDev ? "inline-source-map" : false, // Данный параметр помогает отслеживать ошибки, а именно в каком файле произошла ошибка
     devServer: isDev ? buildDevServer(options) : undefined,
   };

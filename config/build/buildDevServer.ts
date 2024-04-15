@@ -6,5 +6,6 @@ export function buildDevServer({ port }: IOptions): DevServerConfiguration {
     port: port, // Порт на котором будет запускаться devServer
     open: true, // Необходим для автоматического открытия браузера
     historyApiFallback: true,
+    hot: true, // Настройка для HMR, которая работает в обычном JS, но не реакт
   };
 }
