@@ -13,7 +13,6 @@ export const App = () => {
 
   const increment = () => {
     setCount((prev) => prev + 1);
-    throw new Error('Тестовая ошибка')
   };
 
 
