@@ -1,8 +1,8 @@
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import { ModuleOptions } from "webpack";
 import { IOptions } from "./types/types";
-import  ReactRefreshTypeScript  from "react-refresh-typescript";
-
+import ReactRefreshTypeScript from "react-refresh-typescript";
+import { buildBabelLoader } from "./babel/buildBabelLoader";
 
 export function buildLoaders(options: IOptions): ModuleOptions["rules"] {
   const isDev = options.mode === "development";
@@ -60,17 +60,19 @@ export function buildLoaders(options: IOptions): ModuleOptions["rules"] {
     test: /\.tsx?$/, // Формат расширения файла подходящий для этого loader
     use: [
       {
-        loader: 'ts-loader', // Название лоадера для этой регулярки
+        loader: "ts-loader", // Название лоадера для этой регулярки
         options: {
           transpileOnly: isDev ? true : false, // Параметр, который позволяет не ломать сборку, если есть ошибки в ts,
           getCustomTransformers: () => ({
             before: [isDev && ReactRefreshTypeScript()].filter(Boolean),
           }),
-        }
-      }
-    ], 
+        },
+      },
+    ],
     exclude: /node_modules/, // Файлы которые исключаем
   };
 
-  return [svgLoader, assetLoader, scssLoader, tsLoader];
+  const babelLoader = buildBabelLoader(options);
+
+  return [svgLoader, assetLoader, scssLoader, babelLoader];
 }

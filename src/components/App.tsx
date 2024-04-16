@@ -13,6 +13,7 @@ export const App = () => {
 
   const increment = () => {
     setCount((prev) => prev + 1);
+    throw new Error('Тестовая ошибка')
   };
 
 
@@ -23,12 +24,12 @@ export const App = () => {
   return (
     <div>
       <h1>{__PLATFORM__}</h1>
-      <div>
+      <div data-testid={'PINGPONG'}>
         <img width={100} height={100} src={avatarPng} alt="" />
         <img width={100} height={100} src={avatarJpg} alt="" />
       </div>
       <div>
-        asfasfasfasf asfasfasfasf1111 asfasfasfasf1111213213sd
+        asfasfasfasf asfasfasfasf1111 asfasfasfasf1111213213sdasddsaasdasdasd
         <Image color={"red"} width={300} height={300} />
       </div>
       <nav>
